@@ -1,45 +1,37 @@
 package model;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class Program {
+
     private int programID;
     private int fundraiserID;
     private String programTitle;
     private String programDesc;
     private String programStatus;
-    private String programTopic;
     private String fundraiserName;
     private String beneficiaryName;
-    private String programType;
     private int programTarget;
     private int programRaised;
     private Date startDate;
-    private Date endDate;
     private int withdrawn;
 
-    private List<Comment> comments;
-    private List<Transaction> transactions;
-
-    public Program(int programID, int fundraiserID, String programTitle, String programDesc, String programTopic, String fundraiserName, String beneficiaryName, String programType, int programTarget, Date endDate) {
+    public Program(int programID, int fundraiserID, String programTitle, String programDesc, String fundraiserName, String beneficiaryName, int programTarget) {
         this.programID = programID;
         this.fundraiserID = fundraiserID;
         this.programTitle = programTitle;
         this.programDesc = programDesc;
         this.programStatus = "Not Finished";
-        this.programTopic = programTopic;
         this.fundraiserName = fundraiserName;
         this.beneficiaryName = beneficiaryName;
-        this.programType = programType;
         this.programTarget = programTarget;
         this.programRaised = 0;
         this.startDate = new Date();
-        this.endDate = endDate;
         this.withdrawn = 0;
-        this.comments = new ArrayList<Comment>();
-        this.transactions = new ArrayList<Transaction>();
     }
 
     public int getProgramID() {
@@ -82,14 +74,6 @@ public class Program {
         this.programStatus = programStatus;
     }
 
-    public String getProgramTopic() {
-        return programTopic;
-    }
-
-    public void setProgramTopic(String programTopic) {
-        this.programTopic = programTopic;
-    }
-
     public String getFundraiserName() {
         return fundraiserName;
     }
@@ -106,24 +90,25 @@ public class Program {
         this.beneficiaryName = beneficiaryName;
     }
 
-    public String getProgramType() {
-        return programType;
-    }
-
-    public void setProgramType(String programType) {
-        this.programType = programType;
-    }
-
-    public int getProgramTarget() {
-        return programTarget;
+    public String getProgramTarget() {
+        return formatAmount(programTarget);
     }
 
     public void setProgramTarget(int programTarget) {
         this.programTarget = programTarget;
     }
 
-    public int getProgramRaised() {
-        return programRaised;
+    private String formatAmount(double amount){
+        Locale localeID = new Locale("in", "ID");
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(localeID);
+        currencyFormat.setMaximumFractionDigits(0);
+        String formattedPrice = currencyFormat.format(amount);
+
+        return formattedPrice.replace("Rp", "Rp ");
+    }
+
+    public String getProgramRaised() {
+        return formatAmount(programRaised);
     }
 
     public void setProgramRaised(int programRaised) {
@@ -138,14 +123,6 @@ public class Program {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
-
     public int getWithdrawn() {
         return withdrawn;
     }
@@ -154,19 +131,7 @@ public class Program {
         this.withdrawn = withdrawn;
     }
 
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
-
-    public List<Transaction> getTransactions() {
-        return transactions;
-    }
-
-    public void setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
+    public String getPercentage() {
+        return String.format("%.2f", (double) programRaised / programTarget * 100);
     }
 }

@@ -1,16 +1,19 @@
 package model;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 public class Comment {
     private int transactionID;
     private String content;
     private String userName;
-    private int userID;
+    private int amount;
 
-    public Comment(int transactionID, String content, String userName, int userID) {
+    public Comment(int transactionID, String content, String userName, int amount) {
         this.transactionID = transactionID;
         this.content = content;
         this.userName = userName;
-        this.userID = userID;
+        this.amount = amount;
     }
 
     public int getTransactionID() {
@@ -37,11 +40,20 @@ public class Comment {
         this.userName = userName;
     }
 
-    public int getUserID() {
-        return userID;
+    public String getAmount() {
+        return formatAmount(amount);
     }
 
-    public void setUserID(int userID) {
-        this.userID = userID;
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
+    private String formatAmount(double amount){
+        Locale localeID = new Locale("in", "ID");
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(localeID);
+        currencyFormat.setMaximumFractionDigits(0);
+        String formattedPrice = currencyFormat.format(amount);
+
+        return formattedPrice.replace("Rp", "Rp ");
     }
 }

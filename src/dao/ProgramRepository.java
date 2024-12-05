@@ -1,6 +1,8 @@
 package dao;
 
+import factory.CommentFactory;
 import factory.ProgramFactory;
+import model.Comment;
 import model.Program;
 import util.DatabaseConnection;
 
@@ -42,6 +44,36 @@ public class ProgramRepository {
         return programs;
     }
 
+    public List<Program> getAllPrograms() {
+        List<Program> programs = new ArrayList<>();
+        String sql = "SELECT * FROM programs";
+        try (PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Program program = ProgramFactory.createProgramFromResultSet(rs);
+                programs.add(program);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return programs;
+    }
 
+    public List<Comment> getCommentsByProgramId(int programId) {
+        List<Comment> comments = new ArrayList<>();
+        String sql = "SELECT * FROM comments WHERE programID = ? ORDER BY commentDate ASC";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, programId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Comment comment = CommentFactory.createCommentFromResultSet(rs);
+                    comments.add(comment);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return comments;
+    }
 
 }

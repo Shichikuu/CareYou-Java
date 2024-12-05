@@ -179,12 +179,12 @@ public class TransactionRepository {
         return -1;
     }
 
-    public void insertDonation(int transactionId, String paymentMethod, boolean isAnonymous) {
-        String sql = "INSERT INTO donations (transactionID, paymentMethod, isAnonymous) VALUES (?, ?, ?)";
+    public void insertDonation(int transactionId, String paymentMethod, boolean hasComment) {
+        String sql = "INSERT INTO donations (transactionID, paymentMethod, hasComment) VALUES (?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, transactionId);
             stmt.setString(2, paymentMethod);
-            stmt.setBoolean(3, isAnonymous);
+            stmt.setBoolean(3, hasComment);
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -202,11 +202,13 @@ public class TransactionRepository {
         }
     }
 
-    public void addComment(int transactionId, String comment) {
-        String sql = "UPDATE donations SET comment = ? WHERE transactionID = ?";
+    public void addComment(int transactionId, String content, String username, int amount){
+        String sql = "INSERT INTO comments (transactionID, content, username, amount) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, comment);
-            stmt.setInt(2, transactionId);
+            stmt.setInt(1, transactionId);
+            stmt.setString(2, content);
+            stmt.setString(3, username);
+            stmt.setInt(4, amount);
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

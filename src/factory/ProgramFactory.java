@@ -7,8 +7,8 @@ import java.sql.SQLException;
 import java.util.Date;
 
 public class ProgramFactory {
-    public Program createProgram(int programID, int fundraiserID, String programTitle, String programDesc, String programTopic, String fundraiserName, String beneficiaryName, String programType, int programTarget, Date endDate) {
-        return new Program(programID, fundraiserID, programTitle, programDesc, programTopic, fundraiserName, beneficiaryName, programType, programTarget, endDate);
+    public Program createProgram(int programID, int fundraiserID, String programTitle, String programDesc, String fundraiserName, String beneficiaryName, int programTarget) {
+        return new Program(programID, fundraiserID, programTitle, programDesc, fundraiserName, beneficiaryName, programTarget);
     }
 
     public static Program createProgramFromResultSet(ResultSet rs) throws SQLException {
@@ -26,6 +26,11 @@ public class ProgramFactory {
         Date startDate = rs.getDate("startDate");
         Date endDate = rs.getDate("endDate");
         int withdrawn = rs.getInt("withdrawn");
-        return new Program(programID, fundraiserID, programTitle, programDesc, programTopic, fundraiserName, beneficiaryName, programType, programTarget, endDate);
+        Program program = new Program(programID, fundraiserID, programTitle, programDesc, fundraiserName, beneficiaryName, programTarget);
+        program.setProgramStatus(programStatus);
+        program.setProgramRaised(programRaised);
+        program.setStartDate(startDate);
+        program.setWithdrawn(withdrawn);
+        return program;
     }
 }

@@ -8,18 +8,14 @@ public class User {
     protected String username;
     protected String email;
     protected String password;
-    protected String role;
-    private List<Program> programs;
-    private List<Transaction> transactions;
+//    protected String role;
 
     public User(int userId, String username, String email, String password) {
         this.userId = userId;
         this.username = username;
         this.email = email;
         this.password = password;
-        this.role = "user";
-        this.programs = new ArrayList<Program>();
-        this.transactions = new ArrayList<Transaction>();
+//        this.role = "user";
     }
 
     public int getUserId() {
@@ -54,11 +50,13 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
-    }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
+
+//    public String getRole() {
+//        return role;
+//    }
+//
+//    public void setRole(String role) {
+//        this.role = role;
+//    }
 }

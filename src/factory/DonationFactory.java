@@ -23,10 +23,9 @@ public class DonationFactory implements TransactionFactory {
         int amount = donationData.getAmount();
         int programID = donationData.getProgramID();
         String paymentMethod = donationData.getPaymentMethod();
-        boolean isAnonymous = donationData.isAnonymous();
         boolean hasComment = donationData.isHasComment();
 
-        return new Donation(transactionID, userID, transactionDate, amount, programID, paymentMethod, isAnonymous, hasComment);
+        return new Donation(transactionID, userID, transactionDate, amount, programID, paymentMethod, hasComment);
     }
 
     @Override
@@ -38,8 +37,7 @@ public class DonationFactory implements TransactionFactory {
         int amount = rs.getInt("amount");
         int programID = rs.getInt("programID");
         String paymentMethod = rs.getString("paymentMethod");
-        boolean isAnonymous = rs.getBoolean("isAnonymous");
         boolean hasComment = rs.getBoolean("hasComment");
-        return new Donation(transactionID, userID, transactionDate, amount, programID, paymentMethod, isAnonymous, hasComment);
+        return new Donation(transactionID, userID, transactionDate, amount, programID, paymentMethod, hasComment);
     }
 }

@@ -1,15 +1,11 @@
 package dao;
 
-import factory.OrganizationFactory;
 import factory.UserFactory;
-import model.Organization;
 import model.User;
 import util.DatabaseConnection;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class UserRepository {
 
@@ -27,27 +23,73 @@ public class UserRepository {
         return instance;
     }
 
-    public List<Organization> getTop1Organization() {
-        List<Organization> Organizations = new ArrayList<>();
-        String sql = "SELECT u.*, SUM(t.amount) as totalAmount " +
-                "FROM users u " +
-                "JOIN transactions t ON u.userID = t.userID " +
-                "JOIN organizations o ON u.userID = o.userID " +
-                "WHERE u.role = 'organization' " +
-                "GROUP BY u.userID " +
-                "ORDER BY totalAmount DESC " +
-                "LIMIT 10";
-        try (PreparedStatement ps = connection.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                User user = UserFactory.createUserFromResultSet(rs);
-                Organization organization = OrganizationFactory.createOrganizationFromResultSet(user, rs);
-                Organizations.add(organization);
+//    public List<Organization> getTop1Organization() {
+//        List<Organization> Organizations = new ArrayList<>();
+//        String sql = "SELECT u.*, SUM(t.amount) as totalAmount " +
+//                "FROM users u " +
+//                "JOIN transactions t ON u.userID = t.userID " +
+//                "JOIN organizations o ON u.userID = o.userID " +
+//                "WHERE u.role = 'organization' " +
+//                "GROUP BY u.userID " +
+//                "ORDER BY totalAmount DESC " +
+//                "LIMIT 10";
+//        try (PreparedStatement ps = connection.prepareStatement(sql);
+//             ResultSet rs = ps.executeQuery()) {
+//            while (rs.next()) {
+//                User user = UserFactory.createUserFromResultSet(rs);
+//                Organization organization = OrganizationFactory.createOrganizationFromResultSet(user, rs);
+//                Organizations.add(organization);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return Organizations;
+//    }
+    public User validateUser(String email, String password) {
+        String sql = "SELECT * FROM users WHERE userEmail = ? AND userPassword = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            stmt.setString(2, password);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    User user = UserFactory.createUserFromResultSet(rs);
+                    return user;
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return Organizations;
+        return null;
+    }
+
+    public boolean isUserEmailExists(String email) {
+        String sql = "SELECT COUNT(*) FROM users WHERE userEmail = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean isUserNameExists(String name) {
+        String sql = "SELECT COUNT(*) FROM users WHERE userName = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, name);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public User getUserById(int id) {
@@ -67,6 +109,14 @@ public class UserRepository {
     }
 
     public void updateUserProfile(User curr, String name, String email, String password) {
+        if (isUserEmailExists(email) && !curr.getEmail().equals(email)) {
+            System.out.println("User with this email already exists.");
+            return;
+        }
+        if(isUserNameExists(name) && !curr.getUsername().equals(name)){
+            System.out.println("User with this name already exists.");
+            return;
+        }
         String sql = "UPDATE users SET userName = ?, userEmail = ?, userPassword = ? WHERE userID = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, name);
@@ -93,13 +143,20 @@ public class UserRepository {
     }
 
     public User register(String name, String email, String password) {
-        String sql = "INSERT INTO users (userName, userEmail, userPassword, joinDate, role) VALUES (?, ?, ?, ?, ?)";
+        if (isUserEmailExists(email)) {
+            System.out.println("User with this email already exists.");
+            return null;
+        }
+        if(isUserNameExists(name)){
+            System.out.println("User with this name already exists.");
+            return null;
+        }
+        String sql = "INSERT INTO users (userName, userEmail, userPassword, joinDate) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, name);
             stmt.setString(2, email);
             stmt.setString(3, password); // Hash the password
             stmt.setDate(4, new java.sql.Date(new Date().getTime()));
-            stmt.setString(5, "user");
             int affectedRows = stmt.executeUpdate();
             if (affectedRows == 0) {
                 throw new SQLException("Creating user failed, no rows affected.");
