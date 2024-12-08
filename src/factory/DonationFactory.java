@@ -12,12 +12,11 @@ import java.util.Date;
 public class DonationFactory implements TransactionFactory {
     @Override
     public Transaction createTransaction(TransactionData data) {
-        if (!(data instanceof DonationData)) {
+        if (!(data instanceof DonationData donationData)) {
             throw new IllegalArgumentException("Invalid data type for Donation");
         }
-        DonationData donationData = (DonationData) data;
 
-        int transactionID = donationData.getTransactionID();
+        int transactionID = 0;
         int userID = donationData.getUserID();
         Date transactionDate = donationData.getTransactionDate();
         int amount = donationData.getAmount();

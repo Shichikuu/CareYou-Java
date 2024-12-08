@@ -1,24 +1,13 @@
 package data;
 
+import java.util.Date;
+
 public class WithdrawalData extends TransactionData{
-    private String bankAccount;
-    private String bankName;
     private String withdrawMethod;
 
-    public String getBankAccount() {
-        return bankAccount;
-    }
-
-    public void setBankAccount(String bankAccount) {
-        this.bankAccount = bankAccount;
-    }
-
-    public String getBankName() {
-        return bankName;
-    }
-
-    public void setBankName(String bankName) {
-        this.bankName = bankName;
+    public WithdrawalData(int userID, Date transactionDate, int amount, int programID, String withdrawMethod) {
+        super(userID, transactionDate, amount, programID);
+        this.withdrawMethod = withdrawMethod;
     }
 
     public String getWithdrawMethod() {

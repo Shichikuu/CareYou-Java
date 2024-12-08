@@ -17,14 +17,11 @@ public class ProgramFactory {
         String programTitle = rs.getString("programTitle");
         String programDesc = rs.getString("programDesc");
         String programStatus = rs.getString("programStatus");
-        String programTopic = rs.getString("programTopic");
         String fundraiserName = rs.getString("fundraiserName");
         String beneficiaryName = rs.getString("beneficiaryName");
-        String programType = rs.getString("programType");
         int programTarget = rs.getInt("programTarget");
         int programRaised = rs.getInt("programRaised");
         Date startDate = rs.getDate("startDate");
-        Date endDate = rs.getDate("endDate");
         int withdrawn = rs.getInt("withdrawn");
         Program program = new Program(programID, fundraiserID, programTitle, programDesc, fundraiserName, beneficiaryName, programTarget);
         program.setProgramStatus(programStatus);

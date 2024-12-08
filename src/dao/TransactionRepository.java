@@ -32,7 +32,7 @@ public class TransactionRepository {
     }
 
     public int getUserAmount(User user) {
-        String sql = "SELECT SUM(amount) FROM transactions WHERE userID = ?";
+        String sql = "SELECT SUM(amount) FROM transactions WHERE userId = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, user.getUserId());
             try (ResultSet rs = stmt.executeQuery()) {
@@ -48,7 +48,12 @@ public class TransactionRepository {
 
     public List<Transaction> getTransactionByUserID(int userID) {
         List<Transaction> transactions = new ArrayList<>();
-        String sql = "SELECT * FROM transactions WHERE userID = ?";
+        String sql = "SELECT * " +
+                "FROM transactions t " +
+                "LEFT JOIN donations d ON t.transactionId = d.transactionId " +
+                "LEFT JOIN withdrawals w ON t.transactionId = w.transactionId " +
+                "WHERE t.userId = ? " +
+                "ORDER BY t.transactionDate DESC";;
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, userID);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -56,9 +61,10 @@ public class TransactionRepository {
                     Transaction transaction = null;
                     if(rs.getString("transactionType").equals("Withdrawal")) {
                         transaction = withdrawalFactory.createTransactionFromResultSet(rs);
-                    }else{
+                    }else if(rs.getString("transactionType").equals("Donation")){
                         transaction = donationFactory.createTransactionFromResultSet(rs);
                     }
+                    System.out.println(transaction.getTransactionType());
                     transactions.add(transaction);
                 }
             }
@@ -70,7 +76,7 @@ public class TransactionRepository {
 
     public List<Transaction> getTransactionByProgramId(int programId) {
         List<Transaction> transactions = new ArrayList<>();
-        String sql = "SELECT * FROM transactions WHERE programID = ? ORDER BY transactionDate DESC";
+        String sql = "SELECT * FROM transactions WHERE programId = ? ORDER BY transactionDate DESC";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, programId);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -92,7 +98,7 @@ public class TransactionRepository {
 
     public List<Donation> getDonationsByProgramId(int programId) {
         List<Donation> transactions = new ArrayList<>();
-        String sql = "SELECT * FROM transactions WHERE programID = ? AND transactionType = 'Donation' ORDER BY transactionDate DESC";
+        String sql = "SELECT * FROM transactions WHERE programId = ? AND transactionType = 'Donation' ORDER BY transactionDate DESC";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, programId);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -109,7 +115,7 @@ public class TransactionRepository {
 
     public List<Donation> getDonationFromUserID(int id) {
         List<Donation> transactions = new ArrayList<>();
-        String sql = "SELECT * FROM transactions WHERE userID = ? AND transactionType = 'Donation'";
+        String sql = "SELECT * FROM transactions WHERE userId = ? AND transactionType = 'Donation'";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -126,7 +132,7 @@ public class TransactionRepository {
 
     public List<Withdrawal> getWithdrawalFromUserID(int id) {
         List<Withdrawal> transactions = new ArrayList<>();
-        String sql = "SELECT * FROM transactions WHERE userID = ? AND transactionType = 'Withdrawal'";
+        String sql = "SELECT * FROM transactions WHERE userId = ? AND transactionType = 'Withdrawal'";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -142,7 +148,7 @@ public class TransactionRepository {
     }
 
     public int generateId() {
-        String sql = "SELECT MAX(transactionID) FROM transactions";
+        String sql = "SELECT MAX(transactionId) FROM transactions";
         try (PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
@@ -155,7 +161,7 @@ public class TransactionRepository {
     }
 
     public int insertTransaction(int userID, Date transactionDate, int amount, String transactionType, int programID) {
-        String sql = "INSERT INTO transactions (userID, transactionDate, amount, transactionType, programID) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO transactions (userId, transactionDate, amount, transactionType, programId) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, userID);
             stmt.setDate(2, new java.sql.Date(transactionDate.getTime()));
@@ -180,7 +186,7 @@ public class TransactionRepository {
     }
 
     public void insertDonation(int transactionId, String paymentMethod, boolean hasComment) {
-        String sql = "INSERT INTO donations (transactionID, paymentMethod, hasComment) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO donations (transactionId, paymentMethod, hasComment) VALUES (?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, transactionId);
             stmt.setString(2, paymentMethod);
@@ -192,7 +198,7 @@ public class TransactionRepository {
     }
 
     public void insertWithdrawal(int transactionId, String withdrawalMethod) {
-        String sql = "INSERT INTO withdrawals (transactionID, withdrawMethod) VALUES (?, ?)";
+        String sql = "INSERT INTO withdrawals (transactionId, withdrawMethod) VALUES (?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, transactionId);
             stmt.setString(2, withdrawalMethod);
@@ -203,7 +209,7 @@ public class TransactionRepository {
     }
 
     public void addComment(int transactionId, String content, String username, int amount){
-        String sql = "INSERT INTO comments (transactionID, content, username, amount) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO comments (transactionId, content, username, amount) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, transactionId);
             stmt.setString(2, content);

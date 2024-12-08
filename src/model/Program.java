@@ -1,9 +1,7 @@
 package model;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 public class Program {
@@ -90,8 +88,12 @@ public class Program {
         this.beneficiaryName = beneficiaryName;
     }
 
-    public String getProgramTarget() {
+    public String getProgramTargetString() {
         return formatAmount(programTarget);
+    }
+
+    public int getProgramTarget() {
+        return programTarget;
     }
 
     public void setProgramTarget(int programTarget) {
@@ -107,8 +109,12 @@ public class Program {
         return formattedPrice.replace("Rp", "Rp ");
     }
 
-    public String getProgramRaised() {
+    public String getProgramRaisedString() {
         return formatAmount(programRaised);
+    }
+
+    public int getProgramRaised() {
+        return programRaised;
     }
 
     public void setProgramRaised(int programRaised) {
@@ -132,6 +138,9 @@ public class Program {
     }
 
     public String getPercentage() {
+        if (programRaised / programTarget * 100 > 100) {
+            return "100.00";
+        }
         return String.format("%.2f", (double) programRaised / programTarget * 100);
     }
 }

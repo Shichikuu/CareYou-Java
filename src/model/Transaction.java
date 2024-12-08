@@ -1,6 +1,11 @@
 package model;
 
+import dao.TransactionRepository;
+
+import java.sql.SQLException;
 import java.util.Date;
+
+import static main.Main.currUser;
 
 public abstract class Transaction {
     protected int transactionID;
@@ -18,22 +23,39 @@ public abstract class Transaction {
         this.programID = programID;
     }
 
+    public Transaction(Program program) {
+        this.userID = currUser.getUserId();
+        this.transactionDate = new Date();
+        this.programID = program.getProgramID();
+    }
+
 
     // Template method
-    public final void processTransaction() {
-        validateTransaction();
-        executeTransaction();
-        recordTransaction();
+    public final int processTransaction(Program program) {
+        int errorCode = validateTransaction(program);
+        if(errorCode == 1) {
+            createTransactionHeader();
+            executeTransaction(program);
+            recordTransaction();
+        }
+        return errorCode;
     }
 
-    protected abstract void validateTransaction();
+    protected abstract int validateTransaction(Program program);
 
-    protected abstract void executeTransaction();
-
-    protected void recordTransaction() {
-        // Default implementation for recording transaction
-        // Could involve logging, updating database, etc.
+    protected void createTransactionHeader(){
+        try {
+            TransactionRepository transactionRepo = TransactionRepository.getInstance();
+            int id = transactionRepo.insertTransaction(userID, transactionDate, amount, transactionType, programID);
+            setTransactionID(id);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
+
+    protected abstract void executeTransaction(Program program);
+
+    protected abstract void recordTransaction();
 
     public int getTransactionID() {
         return transactionID;

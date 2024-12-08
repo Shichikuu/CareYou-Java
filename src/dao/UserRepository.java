@@ -93,7 +93,7 @@ public class UserRepository {
     }
 
     public User getUserById(int id) {
-        String sql = "SELECT * FROM users WHERE userID = ?";
+        String sql = "SELECT * FROM users WHERE userId = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -117,7 +117,7 @@ public class UserRepository {
             System.out.println("User with this name already exists.");
             return;
         }
-        String sql = "UPDATE users SET userName = ?, userEmail = ?, userPassword = ? WHERE userID = ?";
+        String sql = "UPDATE users SET userName = ?, userEmail = ?, userPassword = ? WHERE userId = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, name);
             stmt.setString(2, email);
@@ -130,7 +130,7 @@ public class UserRepository {
     }
 
     public int generateUserId() {
-        String sql = "SELECT MAX(userID) FROM users";
+        String sql = "SELECT MAX(userId) FROM users";
         try (PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
@@ -177,7 +177,7 @@ public class UserRepository {
     }
 
     public void changeRole(User user, String role) {
-        String sql = "UPDATE users SET role = ? WHERE userID = ?";
+        String sql = "UPDATE users SET role = ? WHERE userId = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, role);
             stmt.setInt(2, user.getUserId());

@@ -4,18 +4,16 @@ import java.util.Date;
 
 public abstract class TransactionData {
 
-    protected int transactionID;
     protected int userID;
     protected Date transactionDate;
     protected int amount;
     protected int programID;
 
-    public int getTransactionID() {
-        return transactionID;
-    }
-
-    public void setTransactionID(int transactionID) {
-        this.transactionID = transactionID;
+    public TransactionData(int userID, Date transactionDate, int amount, int programID) {
+        this.userID = userID;
+        this.transactionDate = transactionDate;
+        this.amount = amount;
+        this.programID = programID;
     }
 
     public int getUserID() {

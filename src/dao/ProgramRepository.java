@@ -29,7 +29,7 @@ public class ProgramRepository {
 
     public List<Program> getProgramsByUserID(int userID) {
         List<Program> programs = new ArrayList<>();
-        String sql = "SELECT * FROM programs WHERE fundraiserID = ?";
+        String sql = "SELECT * FROM programs WHERE fundraiserId = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, userID);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -61,7 +61,7 @@ public class ProgramRepository {
 
     public List<Comment> getCommentsByProgramId(int programId) {
         List<Comment> comments = new ArrayList<>();
-        String sql = "SELECT * FROM comments WHERE programID = ? ORDER BY commentDate ASC";
+        String sql = "SELECT * FROM comments c JOIN transactions t WHERE t.programId = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, programId);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -74,6 +74,65 @@ public class ProgramRepository {
             e.printStackTrace();
         }
         return comments;
+    }
+
+    public int createProgram(int userId, String title, String name, String beneficiary, String desc, int target) {
+        String sql = "INSERT INTO programs (fundraiserId, programTitle, fundraiserName, beneficiaryName, programDesc, programTarget, startDate, programRaised, withdrawn, programStatus) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setInt(1, userId);
+            stmt.setString(2, title);
+            stmt.setString(3, name);
+            stmt.setString(4, beneficiary);
+            stmt.setString(5, desc);
+            stmt.setInt(6, target);
+            stmt.setDate(7, new java.sql.Date(new Date().getTime()));
+            stmt.setInt(8, 0);
+            stmt.setInt(9, 0);
+            stmt.setString(10, "Not Finished");
+            stmt.executeUpdate();
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int programID = generatedKeys.getInt(1);
+                    return programID;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public void updateProgramRaised(int programID, int amount) {
+        String sql = "UPDATE programs SET programRaised = programRaised + ? WHERE programId = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, amount);
+            stmt.setInt(2, programID);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateProgramStatus(int programID, String status) {
+        String sql = "UPDATE programs SET programStatus = ? WHERE programId = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, status);
+            stmt.setInt(2, programID);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateProgramWithdrawn(int programID, int amount) {
+        String sql = "UPDATE programs SET withdrawn = withdrawn + ? WHERE programId = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, amount);
+            stmt.setInt(2, programID);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }

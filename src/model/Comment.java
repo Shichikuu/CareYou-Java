@@ -16,6 +16,10 @@ public class Comment {
         this.amount = amount;
     }
 
+    public Comment(){
+
+    }
+
     public int getTransactionID() {
         return transactionID;
     }
