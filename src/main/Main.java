@@ -131,7 +131,7 @@ public class Main {
             do {
                 System.out.print("🔹 Enter your password: ");
                 password = sc.nextLine();
-            } while (validatePassword(password));
+            } while (!validatePassword(password));
             User user = userRepo.validateUser(email, password);
             if (user != null) {
                 currUser = user;
@@ -159,17 +159,17 @@ public class Main {
             do {
                 System.out.print("Enter your Username: ");
                 name = sc.nextLine();
-            } while (validateUsername(name));
+            } while (!validateUsername(name));
 
             do {
                 System.out.print("🔹 Enter your email: ");
                 email = sc.nextLine();
-            } while (validateEmail(email));
+            } while (!validateEmail(email));
 
             do {
                 System.out.print("Enter your password: ");
                 password = sc.nextLine();
-            } while (validateRegisterPassword(password));
+            } while (!validateRegisterPassword(password));
 
             User user = userRepo.register(name, email, password);
 
@@ -227,17 +227,17 @@ public class Main {
             do {
                 System.out.print("Enter your Username: ");
                 name = sc.nextLine();
-            } while (validateUsername(name));
+            } while (!validateUsername(name));
 
             do {
                 System.out.print("🔹 Enter your email: ");
                 email = sc.nextLine();
-            } while (validateEmail(email));
+            } while (!validateEmail(email));
 
             do {
                 System.out.print("Enter your password: ");
                 password = sc.nextLine();
-            } while (validateRegisterPassword(password));
+            } while (!validateRegisterPassword(password));
             if(userRepo.updateUserProfile(currUser, name, email, password)) {
                 currUser.setUsername(name);
                 currUser.setEmail(email);
@@ -467,22 +467,22 @@ public class Main {
             do {
                 System.out.print("Enter the program title: ");
                 title = sc.nextLine();
-            } while (validateTitle(title));
+            } while (!validateTitle(title));
 
             do {
                 System.out.print("Enter your name: ");
                 name = sc.nextLine();
-            } while (validateName(name));
+            } while (!validateName(name));
 
             do {
                 System.out.print("Enter the beneficiary name: ");
                 beneficiary = sc.nextLine();
-            } while (validateBeneficiary(beneficiary));
+            } while (!validateBeneficiary(beneficiary));
 
             do {
                 System.out.print("Enter the program description: ");
                 desc = sc.nextLine();
-            } while (validateDescription(desc));
+            } while (!validateDescription(desc));
 
             do {
                 System.out.print("Enter the target amount (in IDR): ");
@@ -492,7 +492,7 @@ public class Main {
                 } catch (NumberFormatException e) {
                     System.out.println("Invalid amount. Please enter a valid number.");
                 }
-            } while (validateTarget(target));
+            } while (!validateTarget(target));
 
             // Confirmation
             do {
