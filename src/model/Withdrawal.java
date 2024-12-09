@@ -9,16 +9,10 @@ import java.util.Date;
 import static main.Main.sc;
 
 public class Withdrawal extends Transaction {
-    // private String bankAccount;
-    // private String bankName;
     private String withdrawMethod;
-
-    // Constructors
 
     public Withdrawal(int transactionID, int userID, Date transactionDate, int amount, Integer programID, String withdrawMethod) {
         super(transactionID, userID, transactionDate, amount, programID);
-        // this.bankAccount = bankAccount;
-        // this.bankName = bankName;
         this.withdrawMethod = withdrawMethod;
         this.transactionType = "Withdrawal";
     }

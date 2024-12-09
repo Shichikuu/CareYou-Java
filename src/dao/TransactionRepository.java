@@ -2,10 +2,7 @@ package dao;
 
 import factory.DonationFactory;
 import factory.WithdrawalFactory;
-import model.Donation;
 import model.Transaction;
-import model.User;
-import model.Withdrawal;
 import util.DatabaseConnection;
 
 import java.sql.*;
@@ -31,21 +28,6 @@ public class TransactionRepository {
         return instance;
     }
 
-    public int getUserAmount(User user) {
-        String sql = "SELECT SUM(amount) FROM transactions WHERE userId = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, user.getUserId());
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
     public List<Transaction> getTransactionByUserID(int userID) {
         List<Transaction> transactions = new ArrayList<>();
         String sql = "SELECT * " +
@@ -65,79 +47,6 @@ public class TransactionRepository {
                         transaction = donationFactory.createTransactionFromResultSet(rs);
                     }
                     System.out.println(transaction.getTransactionType());
-                    transactions.add(transaction);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return transactions;
-    }
-
-    public List<Transaction> getTransactionByProgramId(int programId) {
-        List<Transaction> transactions = new ArrayList<>();
-        String sql = "SELECT * FROM transactions WHERE programId = ? ORDER BY transactionDate DESC";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, programId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    Transaction transaction = null;
-                    if(rs.getString("transactionType").equals("Withdrawal")) {
-                        transaction = withdrawalFactory.createTransactionFromResultSet(rs);
-                    }else{
-                        transaction = donationFactory.createTransactionFromResultSet(rs);
-                    }
-                    transactions.add(transaction);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return transactions;
-    }
-
-    public List<Donation> getDonationsByProgramId(int programId) {
-        List<Donation> transactions = new ArrayList<>();
-        String sql = "SELECT * FROM transactions WHERE programId = ? AND transactionType = 'Donation' ORDER BY transactionDate DESC";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, programId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    Donation transaction = (Donation) donationFactory.createTransactionFromResultSet(rs);
-                    transactions.add(transaction);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return transactions;
-    }
-
-    public List<Donation> getDonationFromUserID(int id) {
-        List<Donation> transactions = new ArrayList<>();
-        String sql = "SELECT * FROM transactions WHERE userId = ? AND transactionType = 'Donation'";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    Donation transaction = (Donation) donationFactory.createTransactionFromResultSet(rs);
-                    transactions.add(transaction);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return transactions;
-    }
-
-    public List<Withdrawal> getWithdrawalFromUserID(int id) {
-        List<Withdrawal> transactions = new ArrayList<>();
-        String sql = "SELECT * FROM transactions WHERE userId = ? AND transactionType = 'Withdrawal'";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    Withdrawal transaction = (Withdrawal) donationFactory.createTransactionFromResultSet(rs);
                     transactions.add(transaction);
                 }
             }
@@ -219,19 +128,6 @@ public class TransactionRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    public int getSumOfDonations() {
-        String sql = "SELECT SUM(amount) FROM transactions WHERE transactionType = 'Donation'";
-        try (PreparedStatement stmt = connection.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
     }
 
 }

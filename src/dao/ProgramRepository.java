@@ -135,4 +135,29 @@ public class ProgramRepository {
         }
     }
 
+    public void deleteProgram(int programID) {
+        String sql = "DELETE FROM programs WHERE programId = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, programID);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateProgram(Program program) {
+        String sql = "UPDATE programs SET programTitle = ?, programDesc = ?, programTarget = ?, startDate = ?, withdrawn = ? WHERE programId = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, program.getProgramTitle());
+            stmt.setString(2, program.getProgramDesc());
+            stmt.setInt(3, program.getProgramTarget());
+            stmt.setDate(4, new java.sql.Date(program.getStartDate().getTime()));
+            stmt.setInt(5, program.getWithdrawn());
+            stmt.setInt(6, program.getProgramID());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

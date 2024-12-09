@@ -23,28 +23,6 @@ public class UserRepository {
         return instance;
     }
 
-//    public List<Organization> getTop1Organization() {
-//        List<Organization> Organizations = new ArrayList<>();
-//        String sql = "SELECT u.*, SUM(t.amount) as totalAmount " +
-//                "FROM users u " +
-//                "JOIN transactions t ON u.userID = t.userID " +
-//                "JOIN organizations o ON u.userID = o.userID " +
-//                "WHERE u.role = 'organization' " +
-//                "GROUP BY u.userID " +
-//                "ORDER BY totalAmount DESC " +
-//                "LIMIT 10";
-//        try (PreparedStatement ps = connection.prepareStatement(sql);
-//             ResultSet rs = ps.executeQuery()) {
-//            while (rs.next()) {
-//                User user = UserFactory.createUserFromResultSet(rs);
-//                Organization organization = OrganizationFactory.createOrganizationFromResultSet(user, rs);
-//                Organizations.add(organization);
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return Organizations;
-//    }
     public User validateUser(String email, String password) {
         String sql = "SELECT * FROM users WHERE userEmail = ? AND userPassword = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -92,30 +70,14 @@ public class UserRepository {
         return false;
     }
 
-    public User getUserById(int id) {
-        String sql = "SELECT * FROM users WHERE userId = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    User user = UserFactory.createUserFromResultSet(rs);
-                    return user;
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public void updateUserProfile(User curr, String name, String email, String password) {
+    public boolean updateUserProfile(User curr, String name, String email, String password) {
         if (isUserEmailExists(email) && !curr.getEmail().equals(email)) {
             System.out.println("User with this email already exists.");
-            return;
+            return false;
         }
         if(isUserNameExists(name) && !curr.getUsername().equals(name)){
             System.out.println("User with this name already exists.");
-            return;
+            return false;
         }
         String sql = "UPDATE users SET userName = ?, userEmail = ?, userPassword = ? WHERE userId = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -127,6 +89,7 @@ public class UserRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return true;
     }
 
     public int generateUserId() {
@@ -174,17 +137,6 @@ public class UserRepository {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public void changeRole(User user, String role) {
-        String sql = "UPDATE users SET role = ? WHERE userId = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, role);
-            stmt.setInt(2, user.getUserId());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
 

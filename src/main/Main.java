@@ -8,7 +8,8 @@ import model.*;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
-import java.util.regex.Pattern;
+
+import static Validation.UserInputValidator.*;
 
 public class Main {
     public static User currUser = null;
@@ -24,7 +25,7 @@ public class Main {
         new Main();
     }
 
-    public static void printTitle(){
+    private static void printTitle(){
         clearConsole();
         System.out.println("=============================================================");
         System.out.println();
@@ -37,7 +38,7 @@ public class Main {
         System.out.println();
     }
 
-    public void Home() {
+    private static void Home() {
         printTitle();
         System.out.println("=============================================================");
         System.out.println("              JOIN US IN MAKING DREAMS A REALITY             ");
@@ -112,7 +113,9 @@ public class Main {
         }
     }
 
-    public void Login() {
+
+
+    private static void Login() {
         printTitle();
         System.out.println("=============================================================");
         System.out.println("                          LOGIN                              ");
@@ -121,28 +124,14 @@ public class Main {
             UserRepository userRepo = UserRepository.getInstance();
             String email;
             String password;
-            do {
+            do{
                 System.out.print("🔹 Enter your email: ");
                 email = sc.nextLine();
-                if (email.isEmpty()) {
-                    System.out.println("Email cannot be empty. Please try again.");
-                } else if (!isValidEmail(email)) {
-                    System.out.println("Invalid email format. Please try again.");
-                } else {
-                    break;
-                }
-            } while (true);
+            }while(!validateEmail(email));
             do {
                 System.out.print("🔹 Enter your password: ");
                 password = sc.nextLine();
-                if (password.isEmpty()) {
-                    System.out.println("Password cannot be empty. Please try again.");
-                } else if (password.length() < 6) {
-                    System.out.println("Password must be at least 6 characters long. Please try again.");
-                } else {
-                    break;
-                }
-            } while (true);
+            } while (validatePassword(password));
             User user = userRepo.validateUser(email, password);
             if (user != null) {
                 currUser = user;
@@ -157,7 +146,7 @@ public class Main {
         }
     }
 
-    public void Register() {
+    private static void Register() {
         printTitle();
         System.out.println("=============================================================");
         System.out.println("                          REGISTER                           ");
@@ -167,44 +156,20 @@ public class Main {
             String name;
             String email;
             String password;
-
             do {
                 System.out.print("Enter your Username: ");
                 name = sc.nextLine();
-                if (name.isEmpty()) {
-                    System.out.println("Username cannot be empty. Please try again.");
-                } else if (name.length() < 3 || name.length() > 50) {
-                    System.out.println("Username must be between 3 and 50 characters. Please try again.");
-                } else {
-                    break;
-                }
-            } while (true);
+            } while (validateUsername(name));
 
             do {
-                System.out.print("Enter your email: ");
+                System.out.print("🔹 Enter your email: ");
                 email = sc.nextLine();
-                if (email.isEmpty()) {
-                    System.out.println("Email cannot be empty. Please try again.");
-                } else if (!isValidEmail(email)) {
-                    System.out.println("Invalid email format. Please try again.");
-                } else {
-                    break;
-                }
-            } while (true);
+            } while (validateEmail(email));
 
             do {
                 System.out.print("Enter your password: ");
                 password = sc.nextLine();
-                if (password.isEmpty()) {
-                    System.out.println("Password cannot be empty. Please try again.");
-                } else if (password.length() < 6) {
-                    System.out.println("Password must be at least 6 characters long. Please try again.");
-                } else if (!isAlphanumeric(password)) {
-                    System.out.println("Password must be alphanumeric. Please try again.");
-                } else {
-                    break;
-                }
-            } while (true);
+            } while (validateRegisterPassword(password));
 
             User user = userRepo.register(name, email, password);
 
@@ -229,7 +194,9 @@ public class Main {
 
     private static void viewProfile() {
         clearConsole();
-        System.out.println("\n--- Your Profile ---");
+        System.out.println("=============================================================");
+        System.out.println("                           PROFILE                           ");
+        System.out.println("=============================================================");
         System.out.println("Name: " + currUser.getUsername());
         System.out.println("Email: " + currUser.getEmail());
         System.out.println("Option :");
@@ -247,27 +214,45 @@ public class Main {
         }
     }
 
-    public static void updateProfile() {
+    private static void updateProfile() {
         printTitle();
         System.out.println("=============================================================");
         System.out.println("                          UPDATE PROFILE                     ");
         System.out.println("=============================================================");
         try {
             UserRepository userRepo = UserRepository.getInstance();
-            System.out.print("🔹 Enter your name: ");
-            String name = sc.nextLine();
-            System.out.print("🔹 Enter your email: ");
-            String email = sc.nextLine();
-            System.out.print("🔹 Enter your password: ");
-            String password = sc.nextLine();
-            userRepo.updateUserProfile(currUser, name, email, password);
-            System.out.println("Profile updated successfully.");
+            String name;
+            String email;
+            String password;
+            do {
+                System.out.print("Enter your Username: ");
+                name = sc.nextLine();
+            } while (validateUsername(name));
+
+            do {
+                System.out.print("🔹 Enter your email: ");
+                email = sc.nextLine();
+            } while (validateEmail(email));
+
+            do {
+                System.out.print("Enter your password: ");
+                password = sc.nextLine();
+            } while (validateRegisterPassword(password));
+            if(userRepo.updateUserProfile(currUser, name, email, password)) {
+                currUser.setUsername(name);
+                currUser.setEmail(email);
+                currUser.setPassword(password);
+                System.out.println("Profile updated successfully.");
+            }else{
+                System.out.println("Profile update failed. Please try again.");
+                sc.nextLine();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void startDonating() {
+    private static void startDonating() {
         printTitle();
         System.out.println("=============================================================");
         System.out.println("                           PROGRAMS                          ");
@@ -302,15 +287,14 @@ public class Main {
         }
     }
 
-    public static void printWrappedDescription(String description, int maxLineLength) {
+    private static void printWrappedDescription(String description, int maxLineLength) {
         int length = description.length();
         int startIndex = 0;
 
         while (startIndex < length) {
-            // Calculate the end index for the current line, but ensure we don't exceed the string length
+
             int endIndex = Math.min(startIndex + maxLineLength, length);
 
-            // If endIndex is in the middle of a word, find the previous space to avoid breaking words
             if (endIndex < length && description.charAt(endIndex) != ' ') {
                 int lastSpace = description.lastIndexOf(' ', endIndex);
                 if (lastSpace > startIndex) {
@@ -318,15 +302,13 @@ public class Main {
                 }
             }
 
-            // Print the substring for the current line
             System.out.println(description.substring(startIndex, endIndex).trim());
 
-            // Update the startIndex for the next iteration
             startIndex = endIndex + 1;
         }
     }
 
-    private void getProgramDetails(Program program) {
+    private static void getProgramDetails(Program program) {
         clearConsole();
         System.out.println("=============================================================");
         printWrappedDescription(program.getProgramTitle(), 60);
@@ -360,6 +342,7 @@ public class Main {
         System.out.println("0. Back");
         if(currUser!=null && currUser.getUserId() == program.getFundraiserID()){
             System.out.println("1. Withdraw");
+            System.out.println("2. Delete");
         }else{
             System.out.println("1. Donate");
         }
@@ -374,12 +357,19 @@ public class Main {
                     donate(program);
                 }
                 break;
+            case "2":
+                if(currUser!=null && currUser.getUserId() == program.getFundraiserID()){
+                    deleteProgram(program);
+                }else{
+                    System.out.println("Invalid option. Please try again.");
+                }
+                break;
             default:
                 System.out.println("Invalid option. Please try again.");
         }
     }
 
-    private void donate(Program program) {
+    private static void donate(Program program) {
         if(currUser == null){
             System.out.println("You need to login first.");
             sc.nextLine();
@@ -401,7 +391,7 @@ public class Main {
 
     }
 
-    public void viewHistory() {
+    private static void viewHistory() {
         printTitle();
         System.out.println("=============================================================");
         System.out.println("                          HISTORY                            ");
@@ -419,18 +409,17 @@ public class Main {
             }
             System.out.println("0. Back");
             System.out.print("🔹 Choose an option: ");
-            switch (sc.nextLine()) {
-                case "0":
-                    return;
-                default:
-                    System.out.println("Invalid option. Please try again.");
+            if (sc.nextLine().equals("0")) {
+                return;
+            } else {
+                System.out.println("Invalid option. Please try again.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void startFundraising() {
+    private static void startFundraising() {
         if(currUser == null){
             System.out.println("You need to login first.");
             sc.nextLine();
@@ -459,7 +448,7 @@ public class Main {
         }
     }
 
-    private void createProgram(){
+    private static void createProgram(){
 
         System.out.println("=============================================================");
         System.out.println("                      CREATE YOUR PROGRAM                    ");
@@ -472,70 +461,38 @@ public class Main {
             String name;
             String beneficiary;
             String desc;
-            int target;
+            int target = 0;
             boolean confirmation;
 
-
-            // Validate title
             do {
                 System.out.print("Enter the program title: ");
                 title = sc.nextLine();
-                if (title.isEmpty()) {
-                    System.out.println("Title cannot be empty. Please try again.");
-                } else {
-                    break;
-                }
-            } while (true);
+            } while (validateTitle(title));
 
-            // Validate name
             do {
                 System.out.print("Enter your name: ");
                 name = sc.nextLine();
-                if (name.isEmpty()) {
-                    System.out.println("Name cannot be empty. Please try again.");
-                } else {
-                    break;
-                }
-            } while (true);
+            } while (validateName(name));
 
-            // Validate beneficiary
             do {
                 System.out.print("Enter the beneficiary name: ");
                 beneficiary = sc.nextLine();
-                if (beneficiary.isEmpty()) {
-                    System.out.println("Beneficiary cannot be empty. Please try again.");
-                } else {
-                    break;
-                }
-            } while (true);
+            } while (validateBeneficiary(beneficiary));
 
-            // Validate description
             do {
                 System.out.print("Enter the program description: ");
                 desc = sc.nextLine();
-                if (desc.isEmpty()) {
-                    System.out.println("Description cannot be empty. Please try again.");
-                } else {
-                    break;
-                }
-            } while (true);
+            } while (validateDescription(desc));
 
-
-            // Validate target amount
             do {
                 System.out.print("Enter the target amount (in IDR): ");
                 String targetInput = sc.nextLine();
                 try {
                     target = Integer.parseInt(targetInput);
-                    if (target <= 0) {
-                        System.out.println("Target must be greater than zero. Please try again.");
-                    } else {
-                        break;
-                    }
                 } catch (NumberFormatException e) {
                     System.out.println("Invalid amount. Please enter a valid number.");
                 }
-            } while (true);
+            } while (validateTarget(target));
 
             // Confirmation
             do {
@@ -553,7 +510,6 @@ public class Main {
                 }
             } while (true);
 
-            // At this point, all validations have passed, and the user has confirmed
             if (confirmation) {
                 int programId = programRepo.createProgram(currUser.getUserId(), title, name, beneficiary, desc, target);
 
@@ -562,25 +518,14 @@ public class Main {
                 } else {
                     System.out.println("Failed to create program. Please try again.");
                 }
+                sc.nextLine();
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    private static boolean isValidEmail(String email) {
-        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
-        Pattern pattern = Pattern.compile(emailRegex);
-        return pattern.matcher(email).matches();
-    }
-
-    private static boolean isAlphanumeric(String text) {
-        String regex = "^[a-zA-Z0-9]*$";
-        Pattern pattern = Pattern.compile(regex);
-        return pattern.matcher(text).matches();
-    }
-
-    private void viewPrograms(){
+    private static void viewPrograms(){
         printTitle();
         System.out.println("=============================================================");
         System.out.println("                        YOUR PROGRAMS                        ");
@@ -621,7 +566,7 @@ public class Main {
         }
     }
 
-    public static void withdraw(Program program){
+    private static void withdraw(Program program){
         clearConsole();
         System.out.println("=============================================================");
         System.out.println("                          WITHDRAW                            ");
@@ -637,6 +582,26 @@ public class Main {
             System.out.println("Withdrawal canceled.");
         }
         sc.nextLine();
+    }
+
+    private static void deleteProgram(Program program){
+        if(program.getWithdrawn() != program.getProgramRaised()){
+            System.out.println("You cannot delete the program because it has not been fully withdrawn.");
+            sc.nextLine();
+            return;
+        }
+        clearConsole();
+        System.out.println("=============================================================");
+        System.out.println("                          DELETE PROGRAM                      ");
+        System.out.println("=============================================================");
+        System.out.println();
+        try {
+            ProgramRepository programRepo = ProgramRepository.getInstance();
+            programRepo.deleteProgram(program.getProgramID());
+            System.out.println("Program deleted successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
 

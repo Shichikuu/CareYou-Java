@@ -15,13 +15,8 @@ public class DatabaseConnection {
     private static DatabaseConnection instance;
     private Connection connection;
 
-    public ResultSet rs;
-    public ResultSetMetaData rsm;
-    private Statement st;
-
     private DatabaseConnection() throws SQLException {
         try {
-            // Load MySQL JDBC Driver
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(url, username, password);
         } catch (ClassNotFoundException ex) {
@@ -42,35 +37,4 @@ public class DatabaseConnection {
         }
         return instance;
     }
-
-    public ResultSet execQuery(String query){
-        try {
-            rs = st.executeQuery(query);
-            rsm = rs.getMetaData();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return rs;
-    }
-
-    public void execUpdate(String query){
-        try {
-            st.executeUpdate(query);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public PreparedStatement prepareStatement(String query){
-        PreparedStatement ps = null;
-
-        try {
-            ps = connection.prepareStatement(query);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return ps;
-    }
-};
+}
