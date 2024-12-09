@@ -157,7 +157,7 @@ public class Main {
             String email;
             String password;
             do {
-                System.out.print("Enter your Username: ");
+                System.out.print("🔹 Enter your Username: ");
                 name = sc.nextLine();
             } while (!validateUsername(name));
 
@@ -167,7 +167,7 @@ public class Main {
             } while (!validateEmail(email));
 
             do {
-                System.out.print("Enter your password: ");
+                System.out.print("🔹 Enter your password: ");
                 password = sc.nextLine();
             } while (!validateRegisterPassword(password));
 
@@ -225,7 +225,7 @@ public class Main {
             String email;
             String password;
             do {
-                System.out.print("Enter your Username: ");
+                System.out.print("🔹 Enter your Username: ");
                 name = sc.nextLine();
             } while (!validateUsername(name));
 
@@ -235,7 +235,7 @@ public class Main {
             } while (!validateEmail(email));
 
             do {
-                System.out.print("Enter your password: ");
+                System.out.print("🔹 Enter your password: ");
                 password = sc.nextLine();
             } while (!validateRegisterPassword(password));
             if(userRepo.updateUserProfile(currUser, name, email, password)) {
@@ -465,27 +465,27 @@ public class Main {
             boolean confirmation;
 
             do {
-                System.out.print("Enter the program title: ");
+                System.out.print("🔹 Enter the program title: ");
                 title = sc.nextLine();
             } while (!validateTitle(title));
 
             do {
-                System.out.print("Enter your name: ");
+                System.out.print("🔹 Enter your name: ");
                 name = sc.nextLine();
             } while (!validateName(name));
 
             do {
-                System.out.print("Enter the beneficiary name: ");
+                System.out.print("🔹 Enter the beneficiary name: ");
                 beneficiary = sc.nextLine();
             } while (!validateBeneficiary(beneficiary));
 
             do {
-                System.out.print("Enter the program description: ");
+                System.out.print("🔹 Enter the program description: ");
                 desc = sc.nextLine();
             } while (!validateDescription(desc));
 
             do {
-                System.out.print("Enter the target amount (in IDR): ");
+                System.out.print("🔹 Enter the target amount (in IDR): ");
                 String targetInput = sc.nextLine();
                 try {
                     target = Integer.parseInt(targetInput);
