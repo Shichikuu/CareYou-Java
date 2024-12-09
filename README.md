@@ -24,7 +24,7 @@ This approach ensures each transaction type (donation or withdrawal) follows the
 ## 2. Factory Pattern
 
 **Where it's used:**
-- **`DonationFactory` and `WithdrawalFactort` classes implementing `TransactionFactory`**
+- **`DonationFactory` and `WithdrawalFactory` classes implementing `TransactionFactory`**
 - **`CommentFactory`**, **`ProgramFactory`**, **`UserFactory`**
 
 **What it does:**
