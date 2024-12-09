@@ -24,7 +24,7 @@ This approach ensures each transaction type (donation or withdrawal) follows the
 ## 2. Factory Pattern
 
 **Where it's used:**
-- **`Donation` and `Withdrawal` classes implementing `TransactionFactory`**
+- **`DonationFactory` and `WithdrawalFactort` classes implementing `TransactionFactory`**
 - **`CommentFactory`**, **`ProgramFactory`**, **`UserFactory`**
 
 **What it does:**
@@ -39,7 +39,7 @@ By using factories, the code that needs these objects does not need to know the 
 ## 3. Singleton Pattern
 
 **Where it's used:**
-- **`DatabaseConnection`** (or equivalent database access class)
+- **`DatabaseConnection`** 
 
 **What it does:**
 The Singleton pattern ensures only one instance of a class exists at runtime and provides a global point of access to it. This is particularly useful for resources that are expensive or unnecessary to create multiple times, such as database connections.
