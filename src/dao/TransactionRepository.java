@@ -56,18 +56,18 @@ public class TransactionRepository {
         return transactions;
     }
 
-    public int generateId() {
-        String sql = "SELECT MAX(transactionId) FROM transactions";
-        try (PreparedStatement stmt = connection.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            if (rs.next()) {
-                return rs.getInt(1) + 1;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 1;
-    }
+//    public int generateId() {
+//        String sql = "SELECT MAX(transactionId) FROM transactions";
+//        try (PreparedStatement stmt = connection.prepareStatement(sql);
+//             ResultSet rs = stmt.executeQuery()) {
+//            if (rs.next()) {
+//                return rs.getInt(1) + 1;
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return 1;
+//    }
 
     public int insertTransaction(int userID, Date transactionDate, int amount, String transactionType, int programID) {
         String sql = "INSERT INTO transactions (userId, transactionDate, amount, transactionType, programId) VALUES (?, ?, ?, ?, ?)";

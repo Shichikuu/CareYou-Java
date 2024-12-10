@@ -287,7 +287,7 @@ public class Main {
         }
     }
 
-    private static void printWrappedDescription(String description, int maxLineLength) {
+    public static void printWrappedDescription(String description, int maxLineLength) {
         int length = description.length();
         int startIndex = 0;
 
@@ -319,26 +319,19 @@ public class Main {
         printWrappedDescription(program.getProgramDesc(), 60);
         System.out.println();
         System.out.println(program.getProgramRaisedString() + " raised of " + program.getProgramTargetString() + " goal");
-
-        try {
-            ProgramRepository programRepo = ProgramRepository.getInstance();
-            List<Comment> comments = programRepo.getCommentsByProgramId(program.getProgramID());
-            if(!comments.isEmpty()){
-                System.out.println("--------------------------------------------------------------");
-                System.out.println("Supporting Words");
-                System.out.println("--------------------------------------------------------------");
-                for (Comment comment : comments) {
-                    System.out.println("🔹 " + comment.getUserName());
-                    System.out.println("   " + comment.getAmount() + " donated");
-                    System.out.print("   ");
-                    printWrappedDescription(comment.getContent(), 60); // Wrap text if too long
-                    System.out.println();
-                }
+        List<Comment> comments = program.getComments();
+        if(comments != null && !comments.isEmpty()){
+            System.out.println("--------------------------------------------------------------");
+            System.out.println("Supporting Words");
+            System.out.println("--------------------------------------------------------------");
+            for (Comment comment : comments) {
+                System.out.println("🔹 " + comment.getUserName());
+                System.out.println("   " + comment.getAmount() + " donated");
+                System.out.print("   ");
+                printWrappedDescription(comment.getContent(), 60);
+                System.out.println();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-
         System.out.println("0. Back");
         if(currUser!=null && currUser.getUserId() == program.getFundraiserID()){
             System.out.println("1. Withdraw");

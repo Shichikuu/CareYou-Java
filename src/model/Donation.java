@@ -108,7 +108,7 @@ public class Donation extends Transaction {
         program.setProgramRaised(raised + amount);
         try {
             ProgramRepository programRepo = ProgramRepository.getInstance();
-            programRepo.updateProgramRaised(program.getProgramID(), program.getProgramRaised());
+            programRepo.updateProgramRaised(program.getProgramID(), amount);
             if(program.getProgramRaised() >= program.getProgramTarget()){
                 programRepo.updateProgramStatus(program.getProgramID(), "Completed");
             }

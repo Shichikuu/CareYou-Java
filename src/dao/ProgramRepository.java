@@ -61,7 +61,7 @@ public class ProgramRepository {
 
     public List<Comment> getCommentsByProgramId(int programId) {
         List<Comment> comments = new ArrayList<>();
-        String sql = "SELECT * FROM comments c JOIN transactions t WHERE t.programId = ?";
+        String sql = "SELECT * FROM comments c JOIN transactions t ON t.transactionId = c.transactionId WHERE t.programId = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, programId);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -145,19 +145,19 @@ public class ProgramRepository {
         }
     }
 
-    public void updateProgram(Program program) {
-        String sql = "UPDATE programs SET programTitle = ?, programDesc = ?, programTarget = ?, startDate = ?, withdrawn = ? WHERE programId = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, program.getProgramTitle());
-            stmt.setString(2, program.getProgramDesc());
-            stmt.setInt(3, program.getProgramTarget());
-            stmt.setDate(4, new java.sql.Date(program.getStartDate().getTime()));
-            stmt.setInt(5, program.getWithdrawn());
-            stmt.setInt(6, program.getProgramID());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+//    public void updateProgram(Program program) {
+//        String sql = "UPDATE programs SET programTitle = ?, programDesc = ?, programTarget = ?, startDate = ?, withdrawn = ? WHERE programId = ?";
+//        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+//            stmt.setString(1, program.getProgramTitle());
+//            stmt.setString(2, program.getProgramDesc());
+//            stmt.setInt(3, program.getProgramTarget());
+//            stmt.setDate(4, new java.sql.Date(program.getStartDate().getTime()));
+//            stmt.setInt(5, program.getWithdrawn());
+//            stmt.setInt(6, program.getProgramID());
+//            stmt.executeUpdate();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 }

@@ -10,22 +10,22 @@ import java.sql.SQLException;
 import java.util.Date;
 
 public class DonationFactory implements TransactionFactory {
-    @Override
-    public Transaction createTransaction(TransactionData data) {
-        if (!(data instanceof DonationData donationData)) {
-            throw new IllegalArgumentException("Invalid data type for Donation");
-        }
-
-        int transactionID = 0;
-        int userID = donationData.getUserID();
-        Date transactionDate = donationData.getTransactionDate();
-        int amount = donationData.getAmount();
-        int programID = donationData.getProgramID();
-        String paymentMethod = donationData.getPaymentMethod();
-        boolean hasComment = donationData.isHasComment();
-
-        return new Donation(transactionID, userID, transactionDate, amount, programID, paymentMethod, hasComment);
-    }
+//    @Override
+//    public Transaction createTransaction(TransactionData data) {
+//        if (!(data instanceof DonationData donationData)) {
+//            throw new IllegalArgumentException("Invalid data type for Donation");
+//        }
+//
+//        int transactionID = 0;
+//        int userID = donationData.getUserID();
+//        Date transactionDate = donationData.getTransactionDate();
+//        int amount = donationData.getAmount();
+//        int programID = donationData.getProgramID();
+//        String paymentMethod = donationData.getPaymentMethod();
+//        boolean hasComment = donationData.isHasComment();
+//
+//        return new Donation(transactionID, userID, transactionDate, amount, programID, paymentMethod, hasComment);
+//    }
 
     @Override
     public Transaction createTransactionFromResultSet(ResultSet rs) throws SQLException {

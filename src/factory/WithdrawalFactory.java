@@ -12,21 +12,21 @@ import java.util.Date;
 
 public class WithdrawalFactory implements TransactionFactory {
 
-    @Override
-    public Transaction createTransaction(TransactionData data) {
-        if (!(data instanceof WithdrawalData withdrawalData)) {
-            throw new IllegalArgumentException("Invalid data type for Withdrawal");
-        }
-
-        int transactionID = 0;
-        int userID = withdrawalData.getUserID();
-        Date transactionDate = withdrawalData.getTransactionDate();
-        int amount = withdrawalData.getAmount();
-        int programID = withdrawalData.getProgramID();
-        String withdrawMethod = withdrawalData.getWithdrawMethod();
-
-        return new Withdrawal(transactionID, userID, transactionDate, amount, programID, withdrawMethod);
-    }
+//    @Override
+//    public Transaction createTransaction(TransactionData data) {
+//        if (!(data instanceof WithdrawalData withdrawalData)) {
+//            throw new IllegalArgumentException("Invalid data type for Withdrawal");
+//        }
+//
+//        int transactionID = 0;
+//        int userID = withdrawalData.getUserID();
+//        Date transactionDate = withdrawalData.getTransactionDate();
+//        int amount = withdrawalData.getAmount();
+//        int programID = withdrawalData.getProgramID();
+//        String withdrawMethod = withdrawalData.getWithdrawMethod();
+//
+//        return new Withdrawal(transactionID, userID, transactionDate, amount, programID, withdrawMethod);
+//    }
 
     @Override
     public Transaction createTransactionFromResultSet(ResultSet rs) throws SQLException {

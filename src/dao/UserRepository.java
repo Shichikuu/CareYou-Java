@@ -127,8 +127,7 @@ public class UserRepository {
             try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     int userID = generatedKeys.getInt(1);
-                    User user = UserFactory.createUser(userID, name, email, password);
-                    return user;
+                    return UserFactory.createUser(userID, name, email, password);
                 } else {
                     throw new SQLException("Creating user failed, no ID obtained.");
                 }

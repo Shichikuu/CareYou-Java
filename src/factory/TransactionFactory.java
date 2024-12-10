@@ -7,6 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public interface TransactionFactory {
-    Transaction createTransaction(TransactionData data);
+//    Transaction createTransaction(TransactionData data);
     Transaction createTransactionFromResultSet(ResultSet rs) throws SQLException;
 }

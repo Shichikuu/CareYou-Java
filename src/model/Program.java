@@ -1,7 +1,11 @@
 package model;
 
+import dao.ProgramRepository;
+
+import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class Program {
@@ -100,7 +104,7 @@ public class Program {
         this.programTarget = programTarget;
     }
 
-    private String formatAmount(double amount){
+    private String formatAmount(double amount) {
         Locale localeID = new Locale("in", "ID");
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(localeID);
         currencyFormat.setMaximumFractionDigits(0);
@@ -142,5 +146,15 @@ public class Program {
             return "100.00";
         }
         return String.format("%.2f", (double) programRaised / programTarget * 100);
+    }
+
+    public List<Comment> getComments() {
+        try {
+            ProgramRepository programRepo = ProgramRepository.getInstance();
+            return programRepo.getCommentsByProgramId(getProgramID());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

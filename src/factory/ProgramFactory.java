@@ -7,9 +7,9 @@ import java.sql.SQLException;
 import java.util.Date;
 
 public class ProgramFactory {
-    public Program createProgram(int programID, int fundraiserID, String programTitle, String programDesc, String fundraiserName, String beneficiaryName, int programTarget) {
-        return new Program(programID, fundraiserID, programTitle, programDesc, fundraiserName, beneficiaryName, programTarget);
-    }
+//    public Program createProgram(int programID, int fundraiserID, String programTitle, String programDesc, String fundraiserName, String beneficiaryName, int programTarget) {
+//        return new Program(programID, fundraiserID, programTitle, programDesc, fundraiserName, beneficiaryName, programTarget);
+//    }
 
     public static Program createProgramFromResultSet(ResultSet rs) throws SQLException {
         int programID = rs.getInt("programID");
