@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 09, 2024 at 10:32 AM
+-- Generation Time: Dec 10, 2024 at 03:20 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -58,7 +58,8 @@ CREATE TABLE `donations` (
 --
 
 INSERT INTO `donations` (`transactionId`, `paymentMethod`, `hasComment`) VALUES
-(1, 'Bank Transfer', 1);
+(1, 'Bank Transfer', 1),
+(2, 'Digital Wallet', 0);
 
 -- --------------------------------------------------------
 
@@ -85,7 +86,7 @@ CREATE TABLE `programs` (
 --
 
 INSERT INTO `programs` (`programId`, `fundraiserId`, `programTitle`, `fundraiserName`, `beneficiaryName`, `programDesc`, `programTarget`, `startDate`, `programRaised`, `withdrawn`, `programStatus`) VALUES
-(1, 1, 'f', 'e', 'f', 'f', 100000, '2024-12-08 00:00:00.000000', 300000, 0, 'Completed');
+(1, 1, 'f', 'e', 'f', 'f', 100000, '2024-12-08 00:00:00.000000', 350000, 0, 'Completed');
 
 -- --------------------------------------------------------
 
@@ -107,7 +108,8 @@ CREATE TABLE `transactions` (
 --
 
 INSERT INTO `transactions` (`transactionId`, `userId`, `transactionDate`, `amount`, `transactionType`, `programId`) VALUES
-(1, 2, '2024-12-08 00:00:00.000000', 300000, 'Donation', 1);
+(1, 2, '2024-12-08 00:00:00.000000', 300000, 'Donation', 1),
+(2, 2, '2024-12-10 00:00:00.000000', 50000, 'Donation', 1);
 
 -- --------------------------------------------------------
 
@@ -129,7 +131,8 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`userId`, `userName`, `userEmail`, `userPassword`, `joinDate`) VALUES
 (1, 'jsap', 'julian@gmail.com', '123456', '2024-12-07 00:00:00.000000'),
-(2, 'justin@gmail.com', 'justin@gmail.com', 'jus123', '2024-12-08 00:00:00.000000');
+(2, 'justin@gmail.com', 'justin@gmail.com', 'jus123', '2024-12-08 00:00:00.000000'),
+(3, 'test', 'test@gmail.com', 'test123', '2024-12-09 00:00:00.000000');
 
 -- --------------------------------------------------------
 
@@ -163,15 +166,15 @@ ALTER TABLE `donations`
 --
 ALTER TABLE `programs`
   ADD PRIMARY KEY (`programId`),
-  ADD KEY `FKl4uccicqsxyu0rsxtpoy41m48` (`fundraiserId`);
+  ADD KEY `fundraiserId` (`fundraiserId`);
 
 --
 -- Indexes for table `transactions`
 --
 ALTER TABLE `transactions`
   ADD PRIMARY KEY (`transactionId`),
-  ADD KEY `FK3ssmn9suneo436wk56y7g7ca6` (`programId`),
-  ADD KEY `FKf4xayc06sikj4iwfrfi38o4eh` (`userId`);
+  ADD KEY `userId` (`userId`),
+  ADD KEY `programId` (`programId`);
 
 --
 -- Indexes for table `users`
@@ -200,30 +203,51 @@ ALTER TABLE `programs`
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `transactionId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `transactionId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables
 --
 
 --
+-- Constraints for table `comments`
+--
+ALTER TABLE `comments`
+  ADD CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`transactionId`) REFERENCES `transactions` (`transactionId`);
+
+--
+-- Constraints for table `donations`
+--
+ALTER TABLE `donations`
+  ADD CONSTRAINT `donations_ibfk_1` FOREIGN KEY (`transactionId`) REFERENCES `transactions` (`transactionId`);
+
+--
 -- Constraints for table `programs`
 --
 ALTER TABLE `programs`
-  ADD CONSTRAINT `FKl4uccicqsxyu0rsxtpoy41m48` FOREIGN KEY (`fundraiserId`) REFERENCES `users` (`userId`);
+  ADD CONSTRAINT `FKl4uccicqsxyu0rsxtpoy41m48` FOREIGN KEY (`fundraiserid`) REFERENCES `users` (`userid`),
+  ADD CONSTRAINT `programs_ibfk_1` FOREIGN KEY (`fundraiserId`) REFERENCES `users` (`userId`);
 
 --
 -- Constraints for table `transactions`
 --
 ALTER TABLE `transactions`
-  ADD CONSTRAINT `FK3ssmn9suneo436wk56y7g7ca6` FOREIGN KEY (`programid`) REFERENCES `programs` (`programId`),
-  ADD CONSTRAINT `FKf4xayc06sikj4iwfrfi38o4eh` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`);
+  ADD CONSTRAINT `FK3ssmn9suneo436wk56y7g7ca6` FOREIGN KEY (`programid`) REFERENCES `programs` (`programid`),
+  ADD CONSTRAINT `FKf4xayc06sikj4iwfrfi38o4eh` FOREIGN KEY (`userid`) REFERENCES `users` (`userid`),
+  ADD CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`),
+  ADD CONSTRAINT `transactions_ibfk_2` FOREIGN KEY (`programId`) REFERENCES `programs` (`programId`);
+
+--
+-- Constraints for table `withdrawals`
+--
+ALTER TABLE `withdrawals`
+  ADD CONSTRAINT `withdrawals_ibfk_1` FOREIGN KEY (`transactionId`) REFERENCES `transactions` (`transactionId`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
