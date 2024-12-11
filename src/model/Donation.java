@@ -135,7 +135,7 @@ public class Donation extends Transaction {
         TransactionRepository transactionRepo = null;
         try {
             transactionRepo = TransactionRepository.getInstance();
-            transactionRepo.addComment(programID, comment.getContent(), comment.getUserName(), amount);
+            transactionRepo.addComment(transactionID, comment.getContent(), comment.getUserName(), amount);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

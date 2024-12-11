@@ -46,7 +46,6 @@ public class TransactionRepository {
                     }else if(rs.getString("transactionType").equals("Donation")){
                         transaction = donationFactory.createTransactionFromResultSet(rs);
                     }
-                    System.out.println(transaction.getTransactionType());
                     transactions.add(transaction);
                 }
             }
