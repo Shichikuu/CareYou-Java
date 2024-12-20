@@ -269,6 +269,7 @@ public class Main {
                 System.out.println("   Fundraiser : " + program.getFundraiserName());
                 System.out.println("   Percentage : " + program.getPercentage());
                 System.out.println("=============================================================");
+                i++;
             }
             System.out.println("0. Back");
             System.out.print("🔹 Choose a program to donate to: ");
@@ -396,7 +397,7 @@ public class Main {
             for (Transaction transaction : transactions) {
                 System.out.println("=============================================================");
                 System.out.println("Date: " + transaction.getTransactionDate());
-                System.out.println("Amount: " + transaction.getAmount());
+                System.out.println("Amount: " + transaction.getStringAmount());
                 System.out.println("Transaction Type: " + transaction.getTransactionType());
                 System.out.println("=============================================================");
             }
@@ -535,11 +536,13 @@ public class Main {
             int i = 1;
             for (Program program : programs) {
                 System.out.println("=============================================================");
-                System.out.println("Title: " + program.getProgramTitle());
-                System.out.println("Beneficiary: " + program.getBeneficiaryName());
-                System.out.println("Target: " + program.getProgramTargetString());
-                System.out.println("Raised: " + program.getProgramRaisedString());
+                System.out.print(i + ". Title : ");
+                printWrappedDescription(program.getProgramTitle(), 55);
+                System.out.println("  Beneficiary: " + program.getBeneficiaryName());
+                System.out.println("  Target: " + program.getProgramTargetString());
+                System.out.println("  Raised: " + program.getProgramRaisedString());
                 System.out.println("=============================================================");
+                i++;
             }
 
             System.out.println("0. Back");
@@ -592,6 +595,7 @@ public class Main {
             ProgramRepository programRepo = ProgramRepository.getInstance();
             programRepo.deleteProgram(program.getProgramID());
             System.out.println("Program deleted successfully.");
+            sc.nextLine();
         } catch (SQLException e) {
             e.printStackTrace();
         }

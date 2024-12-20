@@ -3,7 +3,9 @@ package model;
 import dao.TransactionRepository;
 
 import java.sql.SQLException;
+import java.text.NumberFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import static main.Main.currUser;
 
@@ -81,8 +83,22 @@ public abstract class Transaction {
         this.transactionDate = transactionDate;
     }
 
+    private String formatAmount(double amount) {
+        Locale localeID = new Locale("in", "ID");
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(localeID);
+        currencyFormat.setMaximumFractionDigits(0);
+        String formattedPrice = currencyFormat.format(amount);
+
+        return formattedPrice.replace("Rp", "Rp ");
+    }
+
     public int getAmount() {
         return amount;
+    }
+
+
+    public String getStringAmount() {
+        return formatAmount(amount);
     }
 
     public void setAmount(int amount) {

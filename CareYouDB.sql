@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 10, 2024 at 03:20 PM
+-- Generation Time: Dec 20, 2024 at 10:13 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -39,7 +39,10 @@ CREATE TABLE `comments` (
 --
 
 INSERT INTO `comments` (`transactionId`, `content`, `username`, `amount`) VALUES
-(1, 'Good Luck!', 'Anonymous', 300000);
+(1, 'Good Luck!', 'Anonymous', 300000),
+(4, 'test', 'julian', 50000),
+(6, 'test 2', 'Anonymous', 15000),
+(7, 'test', 'juliansaputra', 50000);
 
 -- --------------------------------------------------------
 
@@ -59,7 +62,11 @@ CREATE TABLE `donations` (
 
 INSERT INTO `donations` (`transactionId`, `paymentMethod`, `hasComment`) VALUES
 (1, 'Bank Transfer', 1),
-(2, 'Digital Wallet', 0);
+(2, 'Digital Wallet', 0),
+(3, 'Bank Transfer', 1),
+(4, 'Digital Wallet', 1),
+(6, 'Bank Transfer', 1),
+(7, 'Digital Wallet', 1);
 
 -- --------------------------------------------------------
 
@@ -86,7 +93,8 @@ CREATE TABLE `programs` (
 --
 
 INSERT INTO `programs` (`programId`, `fundraiserId`, `programTitle`, `fundraiserName`, `beneficiaryName`, `programDesc`, `programTarget`, `startDate`, `programRaised`, `withdrawn`, `programStatus`) VALUES
-(1, 1, 'f', 'e', 'f', 'f', 100000, '2024-12-08 00:00:00.000000', 350000, 0, 'Completed');
+(1, 1, 'f', 'e', 'f', 'f', 100000, '2024-12-08 00:00:00.000000', 465000, 10000, 'Completed'),
+(3, 5, 'Test', 'test', 'test', 'test', 1000000, '2024-12-11 00:00:00.000000', 50000, 0, 'Not Finished');
 
 -- --------------------------------------------------------
 
@@ -109,7 +117,12 @@ CREATE TABLE `transactions` (
 
 INSERT INTO `transactions` (`transactionId`, `userId`, `transactionDate`, `amount`, `transactionType`, `programId`) VALUES
 (1, 2, '2024-12-08 00:00:00.000000', 300000, 'Donation', 1),
-(2, 2, '2024-12-10 00:00:00.000000', 50000, 'Donation', 1);
+(2, 2, '2024-12-10 00:00:00.000000', 50000, 'Donation', 1),
+(3, 4, '2024-12-11 00:00:00.000000', 50000, 'Donation', 1),
+(4, 4, '2024-12-11 00:00:00.000000', 50000, 'Donation', 1),
+(5, 1, '2024-12-11 00:00:00.000000', 10000, 'Withdrawal', 1),
+(6, 5, '2024-12-11 00:00:00.000000', 15000, 'Donation', 1),
+(7, 6, '2024-12-11 00:00:00.000000', 50000, 'Donation', 3);
 
 -- --------------------------------------------------------
 
@@ -132,7 +145,10 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`userId`, `userName`, `userEmail`, `userPassword`, `joinDate`) VALUES
 (1, 'jsap', 'julian@gmail.com', '123456', '2024-12-07 00:00:00.000000'),
 (2, 'justin@gmail.com', 'justin@gmail.com', 'jus123', '2024-12-08 00:00:00.000000'),
-(3, 'test', 'test@gmail.com', 'test123', '2024-12-09 00:00:00.000000');
+(3, 'test', 'test@gmail.com', 'test123', '2024-12-09 00:00:00.000000'),
+(4, 'julian', 'julians@gmail.com', 'jul123', '2024-12-11 00:00:00.000000'),
+(5, 'user', 'user@gmail.co', 'user123', '2024-12-11 00:00:00.000000'),
+(6, 'juliansaputra', 'juliansaputra04@gmail.com', 'julian123', '2024-12-11 00:00:00.000000');
 
 -- --------------------------------------------------------
 
@@ -144,6 +160,13 @@ CREATE TABLE `withdrawals` (
   `transactionId` int(11) NOT NULL,
   `withdrawMethod` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `withdrawals`
+--
+
+INSERT INTO `withdrawals` (`transactionId`, `withdrawMethod`) VALUES
+(5, 'Bank Transfer');
 
 --
 -- Indexes for dumped tables
@@ -197,19 +220,19 @@ ALTER TABLE `withdrawals`
 -- AUTO_INCREMENT for table `programs`
 --
 ALTER TABLE `programs`
-  MODIFY `programId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `programId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `transactionId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `transactionId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables
